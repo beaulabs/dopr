@@ -1,0 +1,40 @@
+# Compiled files
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+*.tfstate.lock.info
+
+# Module directory
+.terraform
+.terraform/
+.terraform/*
+**/.terraform/*
+
+# Terraform CLI Configuration
+.terraformrc
+
+# Terraform Variables
+*.tfvars
+
+# License json files
+license*.json
+dopr/dopr_vaultdemo_content/demofiles/license*.json
+
+# SSH Keys
+*.pem
+
+# Certs directory
+certs/
+dopr/dopr_vaultdemo_content/certs/
+
+# Draft files
+*.draft
+*.pyld
+*.sh
+
+# MacOSX
+.DS_Store
+.vscode
+dopr/.vscode/
+dopr/.DS_Store
+dopr/dopr_vaultdemo_content/.DS_Store

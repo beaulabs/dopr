@@ -1,0 +1,20 @@
+# This Dockerfile is for building an Ubuntu based image
+# that will run HashiCorp Vault (OSS or Enterprise)
+FROM ubuntu:latest 
+
+# Update Ubuntu software repository for use in installs and then install required 
+# additional software and configurations to operate Vault
+RUN apt-get update && \
+    apt-get install -y curl util-linux iproute2 net-tools iputils-ping zip vim jq sudo cron pv lsof && \
+    service cron start && \
+    #curl -LO https://s3-us-west-2.amazonaws.com/hc-enterprise-binaries/vault/ent/1.2.2/vault-enterprise_1.2.2%2Bent_linux_amd64.zip && \
+    #curl -LO https://releases.hashicorp.com/consul/1.5.3+ent/consul_1.5.3+ent_linux_amd64.zip && \
+    #unzip consul_1.5.3+ent_linux_amd64.zip && \
+    #unzip vault-enterprise_1.2.2%2Bent_linux_amd64.zip && \
+    #mv consul /usr/local/bin/ && \
+    #mv vault /usr/local/bin/
+
+    # Expose the necessary ports for Vault and Consul for access outside
+    # container network
+
+    EXPOSE 8200 8500

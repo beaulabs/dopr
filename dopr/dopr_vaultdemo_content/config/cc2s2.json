@@ -1,0 +1,19 @@
+{
+    "server": true,
+    "node_name": "cc2s2",
+    "datacenter": "dc1",
+    "data_dir": "/opt/shared/config/data/cc2s2",
+    "bind_addr": "0.0.0.0",
+    "client_addr": "0.0.0.0",
+    "advertise_addr": "10.0.10.205",
+    "bootstrap_expect": 3,
+    "retry_join": [
+        "10.0.10.204",
+        "10.0.10.205",
+        "10.0.10.206"
+    ],
+    "ui": true,
+    "log_level": "DEBUG",
+    "enable_syslog": true,
+    "acl_enforce_version_8": false
+}

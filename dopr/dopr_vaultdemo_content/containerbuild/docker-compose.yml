@@ -1,0 +1,169 @@
+version: '2.4'
+
+services:
+
+  vault_vc1s1:
+    image: beaulabs/vcent:latest
+    container_name: vc1s1
+    hostname: vc1s1
+    tty: true
+    networks:
+      labnet:
+        ipv4_address: 10.0.10.101
+    ports:
+      - 10101:8200
+    volumes:
+      - ~/thelab/labapps/dopr/dopr_vaultdemo_content:/opt/shared
+
+  vault_vc1s2:
+    image: beaulabs/vcent:latest
+    container_name: vc1s2
+    hostname: vc1s2
+    tty: true
+    networks:
+      labnet:
+        ipv4_address: 10.0.10.102
+    ports:
+      - 10102:8200
+    volumes:
+      - ~/thelab/labapps/dopr/dopr_vaultdemo_content:/opt/shared
+    
+  vault_vc1s3:
+    image: beaulabs/vcent:latest
+    container_name: vc1s3
+    hostname: vc1s3
+    tty: true
+    networks:
+      labnet:
+        ipv4_address: 10.0.10.103
+    ports:
+      - 10103:8200
+    volumes:
+      - ~/thelab/labapps/dopr/dopr_vaultdemo_content:/opt/shared
+
+  vault_vc2s1:
+    image: beaulabs/vcent:latest
+    container_name: vc2s1
+    hostname: vc2s1
+    tty: true
+    networks:
+      labnet:
+        ipv4_address: 10.0.10.201
+    ports:
+      - 10201:8200
+    volumes:
+      - ~/thelab/labapps/dopr/dopr_vaultdemo_content:/opt/shared      
+
+  vault_vc2s2:
+    image: beaulabs/vcent:latest
+    container_name: vc2s2
+    hostname: vc2s2
+    tty: true
+    networks:
+      labnet:
+        ipv4_address: 10.0.10.202
+    ports:
+      - 10202:8200
+    volumes:
+      - ~/thelab/labapps/dopr/dopr_vaultdemo_content:/opt/shared    
+      
+  vault_vc2s3:
+    image: beaulabs/vcent:latest
+    container_name: vc2s3
+    hostname: vc2s3
+    networks:
+      labnet:
+        ipv4_address: 10.0.10.203
+    tty: true
+    ports:
+      - 10203:8200
+    volumes:
+      - ~/thelab/labapps/dopr/dopr_vaultdemo_content:/opt/shared    
+  
+  consul_cc1s1:
+    image: beaulabs/vcent:latest
+    container_name: cc1s1
+    hostname: cc1s1
+    networks:
+      labnet:
+        ipv4_address: 10.0.10.104
+    tty: true
+    ports:
+      - 10104:8500
+    volumes:
+      - ~/thelab/labapps/dopr/dopr_vaultdemo_content:/opt/shared 
+
+  consul_cc1s2:
+    image: beaulabs/vcent:latest
+    container_name: cc1s2
+    hostname: cc1s2
+    networks:
+      labnet:
+        ipv4_address: 10.0.10.105
+    tty: true
+    ports:
+      - 10105:8500
+    volumes:
+      - ~/thelab/labapps/dopr/dopr_vaultdemo_content:/opt/shared
+
+  consul_cc1s3:
+    image: beaulabs/vcent:latest
+    container_name: cc1s3
+    hostname: cc1s3
+    networks:
+      labnet:
+        ipv4_address: 10.0.10.106
+    tty: true
+    ports:
+      - 10106:8500
+    volumes:
+      - ~/thelab/labapps/dopr/dopr_vaultdemo_content:/opt/shared
+
+  consul_cc2s1:
+    image: beaulabs/vcent:latest
+    container_name: cc2s1
+    hostname: cc2s1
+    networks:
+      labnet:
+        ipv4_address: 10.0.10.204
+    tty: true
+    ports:
+      - 10204:8500
+    volumes:
+      - ~/thelab/labapps/dopr/dopr_vaultdemo_content:/opt/shared
+
+  consul_cc2s2:
+    image: beaulabs/vcent:latest
+    container_name: cc2s2
+    hostname: cc2s2
+    networks:
+      labnet:
+        ipv4_address: 10.0.10.205
+    tty: true
+    ports:
+      - 10205:8500
+    volumes:
+      - ~/thelab/labapps/dopr/dopr_vaultdemo_content:/opt/shared
+
+  consul_cc2s3:
+    image: beaulabs/vcent:latest
+    container_name: cc2s3
+    hostname: cc2s3
+    networks:
+      labnet:
+        ipv4_address: 10.0.10.206
+    tty: true
+    ports:
+      - 10206:8500
+    volumes:
+      - ~/thelab/labapps/dopr/dopr_vaultdemo_content:/opt/shared
+
+networks:
+  labnet:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.0.0.0/8
+          ip_range: 10.0.100.0/24
+          gateway: 10.0.100.1

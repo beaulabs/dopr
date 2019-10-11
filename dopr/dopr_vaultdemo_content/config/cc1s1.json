@@ -1,0 +1,20 @@
+{
+    "server": true,
+    "node_name": "cc1s1",
+    "datacenter": "dc1",
+    "data_dir": "/opt/shared/config/data/cc1s1",
+    "bind_addr": "0.0.0.0",
+    "client_addr": "0.0.0.0",
+    "advertise_addr": "10.0.10.104",
+    "bootstrap_expect": 3,
+    "retry_join": [
+        "10.0.10.104",
+        "10.0.10.105",
+        "10.0.10.106"
+    ],
+    "ui": true,
+    "log_level": "DEBUG",
+    "enable_syslog": true,
+    "log_file": "/opt/shared/config/data/cc1s1/consul.log",
+    "acl_enforce_version_8": false
+}
