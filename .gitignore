@@ -23,9 +23,12 @@ dopr/dopr_vaultdemo_content/demofiles/license*.json
 # SSH Keys
 *.pem
 
-# Certs directory
-certs/
-dopr/dopr_vaultdemo_content/certs/
+# Certs
+#certs/
+#dopr/dopr_vaultdemo_content/certs/*.pem
+#dopr/dopr_vaultdemo_content/certs/*.crt
+*.pem
+*.crt
 
 # Draft files
 *.draft

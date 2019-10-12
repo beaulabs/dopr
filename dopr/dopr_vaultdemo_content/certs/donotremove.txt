@@ -1,0 +1,2 @@
+This file must be included to have GitHub populate folder structure correctly.
+After you sync and run Dopr this file will automatically be removed locally.
