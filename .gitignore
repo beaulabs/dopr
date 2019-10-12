@@ -17,8 +17,8 @@
 *.tfvars
 
 # License json files
-license*.json
-dopr/dopr_vaultdemo_content/demofiles/license*.json
+#license*.json
+#dopr/dopr_vaultdemo_content/demofiles/license*.json
 
 # SSH Keys
 *.pem
