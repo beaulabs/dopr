@@ -336,9 +336,8 @@ quit() {
         # Once things are finalized and not in beta probably safe to just make it rm ./vaultsingle/*.*
         # Note the following files that are placed into the vaultsingle/ directory:
         # audit.log vault_stdout.txt loadenv.sh shamir.txt encrypt.txt decrypt.txt bunsentoken.txt dbwritecreds.txt dbreadcreds.txt ciphertext.txt base64.txt vault_variables.txt
-        rm vaultsingle/*.*
-        rm -R config/data/singleinstance
-        rm config/data/trackruns.txt
+        rm -R vaultsingle
+        rm -R config/data
         psql -U bunsenhoneydew -h localhost -d labapp -c "DROP SCHEMA IF EXISTS thelab CASCADE"
         unset TYPE
         unset PROMPT
@@ -352,12 +351,12 @@ quit() {
         echo ""
         echo "Found running Vault clusters...Terminating..."
         docker-compose down
-        rm -Rf ../config/data/*
+        rm -R ../config/data
         echo "Thank you for using DOPR. Returning you to parent menu."
         echo "Have a nice day!"
         sleep 2
     else
-        rm -Rf ../config/data/*
+        rm -R ../config/data
         echo ""
         echo "No Vault clusters running."
         echo "Thank you for using DOPR. Returning you to parent menu."
@@ -373,6 +372,11 @@ quit() {
 menu() {
     # Clear the screen to start fresh
     clear
+
+    # Create required dependencies folders and file(s) for use during demo actions.
+    #mkdir vaultsingle
+    #mkdir vaultcluster
+    #mkdir config/data
     touch config/data/trackruns.txt
     while [[ $INPUT != [Qq] ]]; do
         clear
