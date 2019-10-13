@@ -17,7 +17,8 @@
 *.tfvars
 
 # License json files
-#license*.json
+license*.json
+dopr_vaultdemo_content/demofiles/licensepayload.json
 
 # SSH Keys
 *.pem
@@ -32,7 +33,7 @@
 # Draft files
 *.draft
 *.pyld
-*.sh
+
 
 # MacOSX
 .DS_Store
