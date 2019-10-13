@@ -17,7 +17,7 @@
 *.tfvars
 
 # License json files
-#license*.json
+license*.json
 
 # SSH Keys
 *.pem
