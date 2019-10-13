@@ -374,9 +374,9 @@ menu() {
     clear
 
     # Create required dependencies folders and file(s) for use during demo actions.
-    #mkdir vaultsingle
-    #mkdir vaultcluster
-    #mkdir config/data
+    mkdir vaultsingle
+    mkdir vaultcluster
+    mkdir config/data
     touch config/data/trackruns.txt
     while [[ $INPUT != [Qq] ]]; do
         clear
