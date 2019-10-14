@@ -351,12 +351,19 @@ quit() {
         echo ""
         echo "Found running Vault clusters...Terminating..."
         docker-compose down
-        rm -R ../config/data
-        echo "Thank you for using DOPR. Returning you to parent menu."
-        echo "Have a nice day!"
-        sleep 2
+        rm -R ../vaultcluster
+        if [[ ! -d ../config/data ]]; then
+            echo "Thank you for using DOPR. Returning you to parent menu."
+            echo "Have a nice day!"
+            sleep 2
+        else
+            rm -R ../config/data
+            echo "Thank you for using DOPR. Returning you to parent menu."
+            echo "Have a nice day!"
+            sleep 2
+        fi
     else
-        rm -R ../config/data
+        rm -R ../vaultcluster
         echo ""
         echo "No Vault clusters running."
         echo "Thank you for using DOPR. Returning you to parent menu."
