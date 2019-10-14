@@ -17,8 +17,8 @@
 export TYPE="pv -qL $((40))"
 export PROMPT="$ "
 export TCOLOR=$(tput setaf 11)
-export OKTATOKEN="009Hfq3jcanYVwSwgp80aawUbzCev0LRWI-QlIJlWR"
-export OKTAPASSWORD="VaultDemo1!"
+export OKTATOKEN="<INSERT OKTA TOKEN>"
+export OKTAPASSWORD="<INSERT OKTA DEMO PASSWORD>"
 
 #######################
 #      FUNCTIONS      #
