@@ -330,6 +330,7 @@ quit() {
     if [[ $? == 1 ]]; then
         echo "Single Vault instance was not running. Checking for clusters..."
         echo ""
+        rm -R vaultsingle
     else
         echo "Terminating Vault and resetting demo environment."
         kill -9 $VPID
