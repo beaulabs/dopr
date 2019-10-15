@@ -18,7 +18,7 @@ export TYPE="pv -qL $((40))"
 export PROMPT="$ "
 export TCOLOR=$(tput setaf 11)
 export OKTATOKEN="<INSERT OKTA TOKEN>"
-export OKTAPASSWORD="<INSERT OKTA DEMO PASSWORD>"
+export OKTAORG="<INSERT OKTA ORG>"
 
 #######################
 #      FUNCTIONS      #
@@ -102,8 +102,6 @@ process_checks() {
             sleep 2
             menu
         fi
-        ###### FILL IN STATEMENT HERE TO CAPTURE IF FAST OR INITIALIZE QUIET HAS ALREADY BEEN RUN, OTHERWISE DEPENDENT UPON PROCESS CHECKS - maybe not a bad thing?
-
     fi
 
 }
@@ -386,6 +384,15 @@ menu() {
     mkdir vaultcluster
     mkdir config/data
     touch config/data/trackruns.txt
+
+    if [[ ! -f doprglobalvariables.txt ]]; then
+        echo "Missing Dopr required variables file: dopglobalvariables.txt"
+        echo "Please create file in \"dopr/dopr_vaultdemo_content\""
+        echo "and populate OKTATOKEN, OKTAORG "
+    else
+        echo "Required dependencies check completed."
+    fi
+
     while [[ $INPUT != [Qq] ]]; do
         clear
         echo "--------------------------"
@@ -513,6 +520,8 @@ menu() {
 # Change to working directory - CHANGE THIS IF YOUR DIR STRUCTURE IS DIFFERENT
 #cd /Users/beau/labs/beaulabs/mydemos/vault_examples/local_vault_instance
 cd dopr_vaultdemo_content/
+
+# Run
 
 # Clear the screen to start fresh
 clear

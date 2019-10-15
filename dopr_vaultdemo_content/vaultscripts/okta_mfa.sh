@@ -54,7 +54,7 @@ echo "$TCOLOR vault write auth/okta/config base_url=okta.com organization=dev-57
 echo ""
 tput sgr0
 
-vault write auth/okta/config base_url=okta.com organization=dev-578305 token=$OKTATOKEN
+vault write auth/okta/config base_url=okta.com organization=$OKTAORG token=$OKTATOKEN
 
 echo ""
 read -rsn1 -p "Demo paused - Press any key to continue..."
