@@ -3,7 +3,7 @@
 # This script will run Vault in server mode pulling config file from a shared location
 #
 # Change the configuration file location to match directory structure required.
-# Configuration file location: /Users/beau/labs/beaulabs/dopr/dopr_vaultdemo_content/containerbuild
+# Configuration file location: dopr/dopr_vaultdemo_content/containerbuild
 
 # Configure CA certificates for using https
 cp /opt/shared/certs/beaulabs.com+19.crt /usr/local/share/ca-certificates/

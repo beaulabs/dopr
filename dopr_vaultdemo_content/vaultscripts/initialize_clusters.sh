@@ -61,6 +61,7 @@ initialize_vault() {
     echo "Initializing Vault primary node in clusters for use..."
     echo "curl -s --request POST --data @./config/vc_init_payload.json https://localhost:${servers[$KEY]}/v1/sys/init | jq"
     curl -s --request POST --data @./config/vc_init_payload.json https://localhost:${servers[$KEY]}/v1/sys/init | jq | tee ./config/data/$KEY.init >/dev/null 2>&1
+    sleep 1
 
 }
 
@@ -73,20 +74,20 @@ initialize_vault() {
 
 unseal_vault() {
 
-    # Remember when running a cluster, only the primary needs to be initialized. It will propogate to other members.
+    # Unseal based on Vault cluster boundry - meaning only apply cluster 1 Shamir to cluster 1 nodes and the same for cluster 2.
     if [[ $KEY == vc1* ]]; then
         echo "Applying Shamir keys to unseal Vault cluster 1 primary server: $KEY"
         # Apply captured shamir keys to unseal Vault
         for i in {0..1}; do
             echo "curl --request PUT --data '{"key": "'"$(jq -r '.keys[\'$i\'] config/data/$VC1.init')"'"}' https://127.0.0.1:${servers[$KEY]}/v1/sys/unseal"
-            curl -s --request PUT --data '{"key": "'"$(jq -r .keys[$i] config/data/vc1s1.init)"'"}' https://127.0.0.1:${servers[$KEY]}/v1/sys/unseal | jq >/dev/null 2>&1
+            curl -s --request PUT --data '{"key": "'"$(jq -r .keys[$i] config/data/$VC1.init)"'"}' https://127.0.0.1:${servers[$KEY]}/v1/sys/unseal | jq >/dev/null 2>&1
         done
     else
         echo "Applying Shamir keys to unseal Vault cluster 2 primary server: $KEY"
         # Apply captured shamir keys to unseal Vault
         for i in {0..1}; do
             echo "curl --request PUT --data '{"key": "'"$(jq -r '.keys[\'$i\'] config/data/$VC2.init')"'"}' https://127.0.0.1:${servers[$KEY]}/v1/sys/unseal"
-            curl -s --request PUT --data '{"key": "'"$(jq -r .keys[$i] config/data/vc2s1.init)"'"}' https://127.0.0.1:${servers[$KEY]}/v1/sys/unseal | jq >/dev/null 2>&1
+            curl -s --request PUT --data '{"key": "'"$(jq -r .keys[$i] config/data/$VC2.init)"'"}' https://127.0.0.1:${servers[$KEY]}/v1/sys/unseal | jq >/dev/null 2>&1
         done
     fi
 
@@ -108,7 +109,7 @@ license_vault() {
 
     else
         echo "Licensing VC2 cluster member: $KEY"
-        echo "--header "X-Vault-Token: $(jq -r .root_token config/data/$VC2.init)" --request PUT --data @./demofiles/licensepayload.json https://127.0.0.1:${servers[$KEY]}/v1/sys/license"
+        echo "curl -s --header "X-Vault-Token: $(jq -r .root_token config/data/$VC2.init)" --request PUT --data @./demofiles/licensepayload.json https://127.0.0.1:${servers[$KEY]}/v1/sys/license"
         curl --header "X-Vault-Token: $(jq -r .root_token config/data/$VC2.init)" --request PUT --data @./demofiles/licensepayload.json https://127.0.0.1:${servers[$KEY]}/v1/sys/license
     fi
 
@@ -123,17 +124,7 @@ license_vault() {
 clear
 echo "STARTING VAULT CLUSTERS"
 echo "--------------------------------------------------------------"
-#cd ~/thelab/labapps/dopr/dopr_vaultdemo_content/
 docker-compose -f ./containerbuild/docker-compose.yml up -d
-
-# For demo purposes we are going to specifically tag 2 specific Vault servers to be the primary active in their respective clusters. Set them here for use.
-export VC1=vc1s1
-export VC2=vc2s1
-touch ./config/data/clusterenv.sh
-chmod 700 ./config/data/clusterenv.sh
-echo "#!/bin/bash" >./config/data/clusterenv.sh
-echo "export VC1="$VC1 >>./config/data/clusterenv.sh
-echo "export VC2="$VC2 >>./config/data/clusterenv.sh
 
 # Declare an associative array to read in both Vault and Consul hostnames and cooresponding ports for configuration
 declare -A servers=()
@@ -151,19 +142,27 @@ for KEY in "${!servers[@]}"; do
     fi
 done
 
-#Due to Docker on Mac, insert a small delay to let the micro-vm spool up and let environment settle before looping through
-#initialization of Vault servers just to keep this going. 7 seconds seems to be the magical number for both clusters to settle.
-#It's 2:19 in the morning and I'm loopy writing this.
+# Due to Docker on Mac, insert a small delay to let the micro-vm spool up and let environment settle before looping through
+# initialization of Vault servers just to keep this going. 7 seconds seems to be the magical number for both clusters to settle.
+# It's 2:19 in the morning and I'm loopy writing this.
+
 sleep 7
+
 echo "Initializing, unsealing and licensing Vault servers"
 
+# To initialize Vault cluster we're going to just pick two Vault nodes to run the initialization against.
+VC1=vc1s1
+VC2=vc2s1
+# Loop through array, find Vault servers and initialize the primaries
 for KEY in "${!servers[@]}"; do
     if [[ $KEY == $VC1 || $KEY == $VC2 ]]; then
         initialize_vault $KEY
     fi
 done
-sleep 5
-# Loop through the Vault servers in each cluster and unseal based on cluster boundary.
+
+# sleep 5
+
+# Loop through and find Vault servers to perform unseal against.
 for KEY in "${!servers[@]}"; do
     if [[ $KEY == v* ]]; then
         unseal_vault $KEY
@@ -178,6 +177,32 @@ done
 
 # Write current container names and port numbers for reference if needed
 docker ps --format="{{.Names}}: {{.Ports}}" | sort | awk '{print $1, $3}' >./config/data/serverlist.txt
+
+echo "Finding current Vault cluster active nodes..."
+for KEY in "${!servers[@]}"; do
+    if [[ $KEY == v* ]]; then
+        if [[ $(curl -s https://localhost:${servers[$KEY]}/v1/sys/health | jq -r .standby) == "false" ]] && [[ $KEY == vc1* ]]; then
+            ACTVC1=$KEY
+            echo "Found Vault cluster 1 active node: $ACTVC1"
+        elif [[ $(curl -s https://localhost:${servers[$KEY]}/v1/sys/health | jq -r .standby) == "false" ]] && [[ $KEY == vc2* ]]; then
+            ACTVC2=$KEY
+            echo "Found Vault cluster 2 active node: $ACTVC2"
+        fi
+    fi
+done
+
+# Set environment variables to pass if selection is made for root credential check or possible use with new terminal shell.
+cat <<EOF >./config/data/clusterenv.sh
+#!/bin/bash
+export VC1=$VC1
+export VC2=$VC2
+export ACTVC1=$ACTVC1
+export ACTVC2=$ACTVC2
+export VC1TOKEN=$(jq -r .root_token ./config/data/$VC1.init)
+export VC2TOKEN=$(jq -r .root_token ./config/data/$VC2.init)
+EOF
+chmod 700 ./config/data/clusterenv.sh
+
 clear
 echo "Consul Clusters CC1 and CC2 have been successfully started."
 echo ""
