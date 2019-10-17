@@ -66,7 +66,9 @@ process_checks() {
     fi
 
     # CLUSTER VAULT - Check if we get a string letter value for demo actions against the Vault clusters and then run checks if cluster is running.
-    if [[ $INPUT =~ ^[b-eB-E]+$ ]]; then
+    if [[ $INPUT == "a" ]] || [[ $INPUT == "A" ]]; then
+        echo $INPUT >>config/data/trackruns.txt
+    elif [[ $INPUT =~ ^[a-eA-E]+$ ]]; then
         if ! grep -Fxq -e "a" -e "A" config/data/trackruns.txt; then
             clear
             echo "Vault cluster is not running. Please start the cluster using"
@@ -76,6 +78,7 @@ process_checks() {
         else
             echo $INPUT >>config/data/trackruns.txt
         fi
+
     fi
 
     # OPERATOR TESTING OPTIONS - This is used to capture testing functions that require their own checks. Yes I could code all of this in a nested nested nested if
@@ -263,6 +266,18 @@ initialize_clusters() {
     menu
 
 }
+
+##############################
+#   Performance Replication  #
+##############################
+
+enable_performance_replication() {
+    ./vaultscripts/performance_replication.sh
+}
+
+# This function stands up 2 Vault clusters and 2 Consul clusters for backend storage in a containerized
+# environment. This is used for a more advanced demo showing performance replication and mount filters.
+
 ###################
 #   Root Token    #
 ###################
@@ -342,7 +357,7 @@ quit() {
         unset PROMPT
         unset TCOLOR
         unset OKTATOKEN
-        unset OKTAPASSWORD
+        unset OKTAORG
     fi
     cd ./containerbuild
     docker-compose ps | grep vc1s1 >/dev/null
@@ -414,7 +429,7 @@ menu() {
         echo "Vault - Clusters"
         echo "--------------------------"
         echo 'A) Initialize Vault Clusters with Consul Storage Backend'
-        #echo 'B) Run Performance Replication'
+        echo 'B) Run Performance Replication'
         #echo 'C) Run Mount Filters'
         #echo 'D) Run Namespaces' (note do I really want to demo this here, or just in the single instance? maybe overkill for demo here?)
         echo ''
@@ -485,6 +500,10 @@ menu() {
         A | a)
             process_checks
             initialize_clusters
+            ;;
+        B | b)
+            process_checks
+            enable_performance_replication
             ;;
         F | f)
             process_checks
